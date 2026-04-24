@@ -1,0 +1,9 @@
+[project]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "asyncpg>=0.29",
+    "greenlet>=3.0",
+    "psycopg2-binary"
+]
