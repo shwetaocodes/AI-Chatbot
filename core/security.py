@@ -1,8 +1,9 @@
+import uuid
+import hashlib
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-
 from core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -61,4 +62,27 @@ def decode_access_token(token: str) -> dict:
         token,
         settings.SECRET_KEY,
         algorithms=[settings.ALGORITHM],
+    )
+
+def generate_refresh_token() -> str:
+    """
+    Generate a cryptographically secure random token.
+    Returns raw UUID string — sent to client, never stored.
+    """
+    return str(uuid.uuid4())
+
+
+def hash_refresh_token(raw_token: str) -> str:
+    """
+    SHA-256 hash of the raw token — stored in DB.
+    Why SHA-256 not bcrypt: refresh tokens are random UUIDs (not passwords),
+    so slow hashing is unnecessary. SHA-256 is fast and sufficient here.
+    """
+    return hashlib.sha256(raw_token.encode()).hexdigest()
+
+
+def make_refresh_token_expiry() -> datetime:
+    """Returns UTC expiry datetime for a new refresh token."""
+    return datetime.now(timezone.utc) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
     )

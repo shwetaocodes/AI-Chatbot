@@ -7,6 +7,7 @@ from models.base import TimestampMixin
 
 if TYPE_CHECKING:
     from models.conversation import Conversation
+    from models.refresh_token import RefreshToken 
 
 class User(TimestampMixin, Base):
     __tablename__ = "users"
@@ -27,4 +28,9 @@ class User(TimestampMixin, Base):
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,                                      
+    )
+    refresh_tokens: Mapped[List["RefreshToken"]] = relationship(  # ← add
+        "RefreshToken",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )

@@ -2,8 +2,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
-from schemas.auth import RegisterRequest, LoginRequest, UserResponse, TokenResponse
-from services.user_service import create_user, login_user
+from core.dependencies import get_current_user
+from schemas.auth import (
+    RegisterRequest, LoginRequest, RefreshRequest,
+    UserResponse, TokenResponse
+)
+from services.user_service import (
+    create_user, login_user, refresh_access_token, logout_user
+)
+from models.user import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -20,13 +27,38 @@ async def register(
 ):
     return await create_user(db, body)
 
+
 @router.post(
     "/login",
     response_model=TokenResponse,
-    summary="Login and get access token",
+    summary="Login — returns access + refresh token",
 )
 async def login(
     body: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
     return await login_user(db, body)
+
+
+@router.post(
+    "/refresh",
+    response_model=TokenResponse,
+    summary="Exchange refresh token for new token pair",
+)
+async def refresh(
+    body: RefreshRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    return await refresh_access_token(db, body)
+
+
+@router.post(
+    "/logout",
+    status_code=204,
+    summary="Revoke refresh token",
+)
+async def logout(
+    body: RefreshRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    await logout_user(db, body)
