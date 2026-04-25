@@ -32,3 +32,13 @@ shell:
 
 db-shell:
 	docker exec -it chatbot_db psql -U chatbot_db -d chatbot_db
+
+
+test:
+	docker exec -it chatbot_api pytest -v
+
+test-cov:
+	docker exec -it chatbot_api pytest --cov=. --cov-report=term-missing
+
+test-fast:
+	docker exec -it chatbot_api pytest -x    

@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
-from api.health import router as health_router
 from api.auth import router as auth_router
+from api.health import router as health_router
 from api.users import router as users_router
-
-from core.exceptions import AppException
 from core.error_handlers import (
     app_exception_handler,
-    validation_exception_handler,
     unhandled_exception_handler,
+    validation_exception_handler,
 )
+from core.exceptions import AppException
 from core.middleware import RequestLoggingMiddleware
 
 app = FastAPI(

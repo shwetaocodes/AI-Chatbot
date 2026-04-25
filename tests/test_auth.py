@@ -1,5 +1,6 @@
-import pytest
 from datetime import timedelta
+
+import pytest
 from freezegun import freeze_time
 
 from core.security import create_access_token
@@ -183,9 +184,11 @@ class TestAccessToken:
         assert error["code"] == "INVALID_TOKEN"
 
     async def test_refresh_token_rejected_as_access_token(self, client, user):
-        from jose import jwt
-        from core.config import settings
         from datetime import datetime, timezone
+
+        from jose import jwt
+
+        from core.config import settings
 
         payload = {
             "sub": str(user.id),

@@ -1,16 +1,15 @@
 """create_users_conversations
 
 Revision ID: 2dbd54af9b55
-Revises: 
+Revises:
 Create Date: 2026-04-23 06:24:03.710276
 
 """
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
 
-
+from alembic import op
 
 revision: str = '2dbd54af9b55'
 down_revision: Union[str, Sequence[str], None] = None

@@ -1,13 +1,14 @@
 import uuid
+
 from fastapi import Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
+from core.exceptions import AccountDisabledError, InvalidTokenError
 from core.security import decode_access_token
-from core.exceptions import InvalidTokenError, AccountDisabledError
 from models.user import User
 
 bearer_scheme = HTTPBearer()

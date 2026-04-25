@@ -1,7 +1,8 @@
-from fastapi import APIRouter
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import text
 import redis.asyncio as aioredis
+from fastapi import APIRouter
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
+
 from core.config import settings
 
 router = APIRouter()
@@ -18,7 +19,7 @@ async def health_check():
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
         await engine.dispose()
-    except Exception as e:
+    except Exception:
         db_status = "error"
 
     # Redis
@@ -27,7 +28,7 @@ async def health_check():
         r = aioredis.from_url(settings.REDIS_URL)
         await r.ping()
         await r.aclose()
-    except Exception as e:
+    except Exception:
         redis_status = "error"
 
     return {

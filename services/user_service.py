@@ -1,31 +1,32 @@
 from datetime import datetime, timezone
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
-from models.user import User
-from models.refresh_token import RefreshToken
-from schemas.auth import RegisterRequest, LoginRequest, TokenResponse, RefreshRequest
-from core.security import (
-    hash_password,
-    verify_password,
-    create_access_token,
-    generate_refresh_token,
-    hash_refresh_token,
-    make_refresh_token_expiry,
-)
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.exceptions import (
+    AccountDisabledError,
     EmailTakenError,
     InvalidCredentialsError,
-    AccountDisabledError,
     InvalidRefreshTokenError,
     TokenRevokedError,
 )
+from core.security import (
+    create_access_token,
+    generate_refresh_token,
+    hash_password,
+    hash_refresh_token,
+    make_refresh_token_expiry,
+    verify_password,
+)
+from models.refresh_token import RefreshToken
+from models.user import User
+from schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse
 
 
 async def create_user(db: AsyncSession, data: RegisterRequest) -> User:
     existing = await db.scalar(select(User).where(User.email == data.email))
     if existing:
-        raise EmailTakenError()        
+        raise EmailTakenError()
 
     user = User(
         email=data.email,
@@ -41,10 +42,10 @@ async def login_user(db: AsyncSession, data: LoginRequest) -> TokenResponse:
     user = await db.scalar(select(User).where(User.email == data.email))
 
     if not user or not verify_password(data.password, user.hashed_password):
-        raise InvalidCredentialsError()   
+        raise InvalidCredentialsError()
 
     if not user.is_active:
-        raise AccountDisabledError()      
+        raise AccountDisabledError()
 
     access_token = create_access_token(user_id=str(user.id))
     raw_refresh = generate_refresh_token()
@@ -73,10 +74,10 @@ async def refresh_access_token(
 
     now = datetime.now(timezone.utc)
     if not token_obj or token_obj.expires_at.replace(tzinfo=timezone.utc) < now:
-        raise InvalidRefreshTokenError()   
+        raise InvalidRefreshTokenError()
 
     if token_obj.revoked:
-        raise TokenRevokedError()  
+        raise TokenRevokedError()
 
     token_obj.revoked = True
     await db.flush()

@@ -1,5 +1,6 @@
-from datetime import datetime
 import uuid
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, field_validator
 
 
@@ -27,7 +28,7 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 class AccessTokenResponse(BaseModel):
-    access_token: str           
+    access_token: str
     token_type: str = "bearer"
 
 class UserResponse(BaseModel):

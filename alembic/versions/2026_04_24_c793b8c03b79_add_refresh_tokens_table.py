@@ -7,9 +7,9 @@ Create Date: 2026-04-24 10:53:28.459515
 """
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = 'c793b8c03b79'
@@ -33,11 +33,10 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_refresh_tokens_user_id'), 'refresh_tokens', ['user_id'], unique=False)
     op.drop_constraint(op.f('users_email_key'), 'users', type_='unique')
-   
+
 
 def downgrade() -> None:
     """Downgrade schema."""
     op.create_unique_constraint(op.f('users_email_key'), 'users', ['email'], postgresql_nulls_not_distinct=False)
     op.drop_index(op.f('ix_refresh_tokens_user_id'), table_name='refresh_tokens')
     op.drop_table('refresh_tokens')
-   

@@ -1,18 +1,18 @@
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     create_async_engine,
 )
 from sqlalchemy.pool import NullPool
 
+import models
 from core.config import settings
 from core.database import Base, get_db
 from core.security import hash_password
 from main import app
 from models.user import User
-import models 
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +27,7 @@ def engine():
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def create_tables(engine):
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)  
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield
     async with engine.begin() as conn:
@@ -37,8 +37,8 @@ async def create_tables(engine):
 @pytest_asyncio.fixture
 async def db(engine):
     async with engine.connect() as conn:
-        await conn.begin()                          
-        savepoint = await conn.begin_nested()       
+        await conn.begin()
+        savepoint = await conn.begin_nested()
 
         session = AsyncSession(
             bind=conn,
@@ -49,8 +49,8 @@ async def db(engine):
         yield session
 
         await session.close()
-        await savepoint.rollback()                  
-        await conn.rollback()                       
+        await savepoint.rollback()
+        await conn.rollback()
 
 
 @pytest_asyncio.fixture
@@ -77,7 +77,7 @@ async def user(db):
         is_active=True,
     )
     db.add(_user)
-    await db.flush()        
+    await db.flush()
     await db.refresh(_user)
     return _user
 
