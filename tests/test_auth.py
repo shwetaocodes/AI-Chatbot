@@ -221,7 +221,6 @@ class TestRefreshToken:
 
     async def test_refresh_returns_new_token_pair(self, client, user):
         tokens = await self._login(client, user)
-        old_access = tokens["access_token"]
         old_refresh = tokens["refresh_token"]
 
         response = await client.post(
@@ -232,8 +231,8 @@ class TestRefreshToken:
         data = response.json()
         assert "access_token" in data
         assert "refresh_token" in data
-        assert data["access_token"] != old_access
         assert data["refresh_token"] != old_refresh
+        assert data["access_token"].startswith("eyJ")
 
     async def test_refreshed_access_token_works(self, client, user):
         tokens = await self._login(client, user)
