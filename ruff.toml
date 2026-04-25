@@ -1,26 +1,11 @@
 target-version = "py311"
-line-length = 88
+line-length = 100
 
 [lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes (unused imports, undefined names)
-    "I",   # isort (import ordering)
-]
-ignore = [
-    "E501",  # line too long — handled by formatter
-]
+select = ["E", "W", "F", "I"]
+ignore = ["E501"]
 
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"tests/**/*.py" = ["F401", "F811"]
-
-[format]
-quote-style = "double"
-indent-style = "space"
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
 "tests/*" = ["F401", "F811"]
-"alembic/*" = ["W291", "E501"]   # ← add this line
+"alembic/*" = ["W291", "E501"]
