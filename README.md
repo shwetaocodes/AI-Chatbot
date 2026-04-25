@@ -1,3 +1,5 @@
+![CI](https://github.com/shwetaocodes/AiChatbot/actions/workflows/ci.yml/badge.svg)
+
 # Chatbot API
 
 AI Chatbot backend built with FastAPI, PostgreSQL, Redis, and Docker.
