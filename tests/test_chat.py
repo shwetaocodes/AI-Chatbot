@@ -1,5 +1,6 @@
 import pytest
 
+
 class TestChat:
 
     @pytest.mark.llm

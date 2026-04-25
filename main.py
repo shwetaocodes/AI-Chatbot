@@ -2,10 +2,9 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
 from api.auth import router as auth_router
+from api.chat import router as chat_router
 from api.health import router as health_router
 from api.users import router as users_router
-from api.chat import router as chat_router  
-
 from core.error_handlers import (
     app_exception_handler,
     unhandled_exception_handler,

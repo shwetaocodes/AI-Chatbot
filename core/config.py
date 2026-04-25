@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3.2"
     OLLAMA_TEMPERATURE: float = 0.7
     OLLAMA_MAX_TOKENS: int = 1000
-    
+
     model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()

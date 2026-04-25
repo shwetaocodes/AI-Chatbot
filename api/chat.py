@@ -1,5 +1,6 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, status
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
@@ -36,5 +37,5 @@ async def chat(
     return ChatResponse(
         reply=reply,
         conversation_id=conversation_id,
-        message_id=uuid.uuid4(),    
+        message_id=uuid.uuid4(),
     )
